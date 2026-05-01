@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"sort"
 	"strings"
@@ -72,9 +73,17 @@ func parseYAML(data []byte) (map[string]struct{}, map[string]struct{}, error) {
 	return keys, extensible, nil
 }
 
-// loadKeys reads a YAML file from disk and parses its keys.
+// loadKeys reads a YAML file from disk (or stdin if path is "-") and parses its keys.
 func loadKeys(path string) (map[string]struct{}, map[string]struct{}, error) {
-	data, err := os.ReadFile(path)
+	var data []byte
+	var err error
+
+	if path == "-" {
+		data, err = io.ReadAll(os.Stdin)
+	} else {
+		data, err = os.ReadFile(path)
+	}
+
 	if err != nil {
 		return nil, nil, fmt.Errorf("reading %s: %w", path, err)
 	}
