@@ -12,8 +12,9 @@ var testData embed.FS
 
 func TestSetDiff(t *testing.T) {
 	tests := []struct {
-		name       string
-		dir        string
+		name        string
+		dir         string
+		allowlist   string
 		wantUnknown []string
 	}{
 		{
@@ -46,6 +47,12 @@ func TestSetDiff(t *testing.T) {
 			dir:         "mixed_keys",
 			wantUnknown: []string{"global.unknown"},
 		},
+		{
+			name:        "allowlist feature",
+			dir:         "allowlist",
+			allowlist:   "allowlist.yaml",
+			wantUnknown: []string{"typoKey"},
+		},
 	}
 
 	for _, tt := range tests {
@@ -65,6 +72,24 @@ func TestSetDiff(t *testing.T) {
 			chartKeys, chartExtensible, err := parseYAML(chartData)
 			if err != nil {
 				t.Fatalf("failed to parse chart: %v", err)
+			}
+
+			if tt.allowlist != "" {
+				allowlistPath := filepath.Join("testdata", tt.dir, tt.allowlist)
+				allowlistData, err := testData.ReadFile(allowlistPath)
+				if err != nil {
+					t.Fatalf("failed to read allowlist file %s: %v", allowlistPath, err)
+				}
+				extraKeys, extraExtensible, err := parseYAML(allowlistData)
+				if err != nil {
+					t.Fatalf("failed to parse allowlist: %v", err)
+				}
+				for k := range extraKeys {
+					chartKeys[k] = struct{}{}
+				}
+				for k := range extraExtensible {
+					chartExtensible[k] = struct{}{}
+				}
 			}
 
 			overrideKeys, _, err := parseYAML(overrideData)
