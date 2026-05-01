@@ -1,0 +1,3 @@
+tolerations:
+  - key: foo
+    operator: Exists

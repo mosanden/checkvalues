@@ -1,0 +1,6 @@
+global:
+  env: dev
+  unknown: true
+resources:
+  requests:
+    memory: 64Mi
