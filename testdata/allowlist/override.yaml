@@ -1,3 +1,6 @@
 hiddenKey: value
 extraKey: value
 typoKey: value
+extraList:
+  - item1
+  - item2
