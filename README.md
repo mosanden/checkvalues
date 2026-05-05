@@ -26,7 +26,7 @@ go install github.com/mosanden/checkvalues@latest
 helm pull --untar stefanprodan/podinfo
 checkvalues [flags] <override.yaml> podinfo/values.yaml
 ```
-or
+Alternatively, you can pipe the values directly from Helm:
 ```bash
 helm show values stefanprodan/podinfo | checkvalues [flags] <override.yaml> -
 ```
