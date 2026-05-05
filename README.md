@@ -24,15 +24,20 @@ go install github.com/mosanden/checkvalues@latest
 
 ```bash
 helm pull --untar stefanprodan/podinfo
-go run main.go [flags] <override.yaml> podinfo/values.yaml
+checkvalues [flags] <override.yaml> podinfo/values.yaml
 ```
+or
+```bash
+helm show values stefanprodan/podinfo | checkvalues [flags] <override.yaml> -
+```
+
 
 ### Flags
 - `-allowlist <path>`: Path to a YAML file containing extra valid keys that aren't in the chart's `values.yaml`.
 
 ### Example
 ```bash
-go run main.go -allowlist extra-keys.yaml my-values.yaml chart/values.yaml
+checkvalues -allowlist extra-keys.yaml my-values.yaml chart/values.yaml
 ```
 
 ## Testing
